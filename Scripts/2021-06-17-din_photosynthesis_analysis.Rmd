@@ -1,0 +1,388 @@
+---
+title: "Photosynthesis_DIN"
+author: "Max Campbell, Chris Brown, Olivia King"
+date: "24/05/2021"
+output: html_document
+---
+
+
+```{r}
+
+library(tidyverse)
+library(mgcv)
+library(visreg)
+
+psii_dat <- read_csv("../Data/DIN_light_PSII_long_new.csv") %>% 
+  rename(hours = `Time (hours)`, DIN = `NH4Cl (mg/L)`,
+         Light_num = `Light (u mol photons m/s/)`, block = Block) %>% 
+  group_by(hours, Light_num, DIN, block) %>% 
+  summarise(photo_inhib = mean(`Photosynthetic inhibition (%)`), 
+                               Yield = mean(`Y(II)`), 
+                               Yield_C = mean(`Average Y (controls)`, na.rm = TRUE)) %>% 
+  within({
+    
+    hours[hours == 0.3] <- 0.33
+    
+    DIN_num <-  case_when(DIN == "Control" ~ 0,
+                             TRUE ~ as.numeric(DIN)
+                             )
+  
+    block <-  factor(as.character(block))
+    
+    hours_fact <- factor(hours)
+    
+    t0 <- ifelse(hours == 0, Yield, NA)
+    inhibt0 <- ifelse(hours == 0, photo_inhib, NA)
+    
+    }) %>% group_by(Light_num, DIN, block ) %>% 
+  fill(t0, inhibt0) %>% ungroup() %>% 
+  mutate(sample_id = factor(gsub("."," ", x = paste(DIN, Light_num, block), fixed = TRUE))) %>% 
+  filter(hours != 0)
+
+```
+
+# Analysis of DIN and light 
+
+Below pools meth control and control. 
+
+```{r}
+ggplot(psii_dat) + 
+  aes(x = hours, y = photo_inhib, color = factor(DIN_num)) + 
+  geom_point() + 
+  facet_grid(.~ Light_num, scales = "free") + 
+  stat_smooth(se = FALSE) + 
+  theme_classic()
+
+ggplot(psii_dat) + 
+  aes(x = hours, y = photo_inhib, color = factor(block)) + 
+  geom_point() + 
+  facet_grid(.~ Light_num, scales = "free") + 
+  stat_smooth(se = FALSE) + 
+  theme_classic()
+
+ggplot(psii_dat) + 
+  aes(x = hours, y = Yield, color = factor(DIN_num)) + 
+  geom_point() + 
+  facet_grid(.~ Light_num, scales = "free") + 
+  stat_smooth(se = FALSE) + 
+  theme_classic()
+
+ggplot(psii_dat) + 
+  aes(x = hours, y = Yield, color = factor(block)) + 
+  geom_point() + 
+  facet_grid(.~ Light_num, scales = "free") + 
+  stat_smooth(se = FALSE) + 
+  theme_classic()
+
+```
+
+```{r}
+
+# psii_dat2 <- psii_dat %>% filter(DIN_num != 0)
+
+# m1_DIN_inhib <- gam(photo_inhib ~ s(hours, k = 5) + 
+#                          offset(inhibt0)+
+#                       s(DIN_num, Light_num, k = 12, by = hours_fact) +  
+#                         s(sample_id, bs = "re")+
+#                        # s(Light_num, k = 3, by = hours_fact) +
+#                        # s(DIN_num, k = 5, by =hours_fact) +
+#                       s(block, bs = "re"), 
+#                     data = psii_dat2)
+
+m1_DIN_yield <- gam(Yield ~ s(hours, k = 5) + 
+                         offset(t0)+
+                      s(DIN_num, Light_num, k = 18, by = hours_fact) +  
+                        #s(sample_id, bs = "re")+
+                       #s(Light_num, k = 3, by = hours_fact) +
+                       #s(DIN_num, k = 5, by =hours_fact) +
+                      s(block, bs = "re"),
+                    #data = filter(psii_dat, !(DIN %in% c(0.0267, 0.267)))
+                    data = psii_dat)
+
+par(mfrow = c(2,2))
+#gam.check(m1_DIN_inhib)
+gam.check(m1_DIN_yield, rep = 500)
+
+```
+
+```{r}
+
+png(filename = "../Outputs/fluoro_DIN_GAM_residuals.png", width = 20, height = 20, units = "cm", res = 300)
+par(mfrow = c(2,2))
+gam.check(m1_DIN_yield)
+dev.off()
+
+```
+
+Everythign matters here, include block. 
+
+```{r}
+summary(m1_DIN_yield)
+```
+
+74% of variance is explained. 
+
+
+Model fit for celld by time
+
+```{r}
+visreg(m1_DIN_yield, xvar = "hours")
+```
+Effect of DIN and light at zero hours
+
+```{r}
+visreg(m1_DIN_yield, xvar = "Light_num", by = "DIN_num",
+cond = list(hours = 24))
+```
+
+Effect of DIN and light at 72 hours 
+```{r}
+visreg(m1_DIN_yield, xvar = "Light_num", by = "DIN_num",
+cond = list(hours = 72))
+
+```
+
+#### Make credible interval functions
+```{r}
+
+## MVN random deviates function
+rmvn <- function(n,mu,sig) {
+  L <- mroot(sig)
+  m <- ncol(L)
+  t(mu + L%*%matrix(rnorm(m*n),m,n)) 
+}
+
+### Function to compute the credible interval data
+
+compute_CI_data <- function(model, dat, nsims = 1000){
+  
+  Xp <- predict(model,dat,type="lpmatrix") # Get linear predictor matrix minus the offset
+
+  which_re <- grepl("block|sample", names(coef(model)))
+  mean_block_effect <- coef(model)[grepl("block", names(coef(model)))] %>% mean()
+  #mean_sample_id_effect <- coef(model)[grepl("sample", names(coef(model)))] %>% mean()
+  
+  # 1000 replicate param. vectors
+  br <- rmvn(nsims,coef(model),model$Vp) 
+  
+  # Remove random effects columns to make condition on average random effect levels
+  Xp <- Xp[,!which_re]
+  br <- br[, !which_re]
+  
+
+# Intialise the matrix for storage of celld estimates
+celldmult <- matrix(NA, nrow = nrow(dat), ncol = nsims)
+
+for (i in 1:nsims){ 
+  pr <- Xp %*% br[i,] + mean_block_effect #+ mean_sample_id_effect ## replicate predictions
+  celldmult[,i] <- pr 
+}
+
+# Convert predictions to the natural scale (added offset here) and bind to the data
+df_bayes <- cbind(dat, celldmult + dat$t0) 
+
+return(df_bayes)
+
+}
+
+```
+
+
+
+### DIN proportion inhib LRR plots 
+
+This doesn't really make sense to do as they are already compared to DIN = 0)
+
+
+```{r}
+# # Generate some data for prediction
+# xDIN_newdata <- with(psii_dat2,{
+#   expand.grid(list(Light_num = unique(Light_num), DIN_num = unique(DIN_num), hours = unique(hours)))}) %>%
+#   mutate(block = 2, sample_id = psii_dat2$sample_id[[1]], hours_fact = factor(hours), inhibt0 = 0) 
+# 
+# # Make predictions based 
+# set.seed(1000)
+# DIN_bayes <- compute_CI_data(model = m1_DIN_inhib, dat = xDIN_newdata, nsims = 1000) %>% within({
+#   Treatment <- case_when(Light_num == 20  ~ "DIN_only",
+#                          DIN_num == 0  ~ "Light_only",
+#                         TRUE ~ "Light_DIN")
+#   }) 
+# 
+# # # Generate the control matrix
+# # DIN_bayes_control <- DIN_bayes %>% filter(Treatment == "Control")
+# # DIN_control_mat <- DIN_bayes_control[ match(DIN_bayes$hours, DIN_bayes_control$hours) ,]
+# 
+# # Generate light only matrix
+# DIN_bayes_light <- DIN_bayes %>% filter(Treatment == "Light_only")
+# DIN_light_mat <- DIN_bayes_light[ match(DIN_bayes$hours, DIN_bayes_light$hours) ,]
+# 
+# # Generate DIN only matrix
+# DIN_bayes_DIN <- DIN_bayes %>% filter(Treatment == "DIN_only")
+# DIN_mat <- DIN_bayes_DIN[ match(DIN_bayes$hours, DIN_bayes_DIN$hours) ,]
+# 
+# # Compute the IR matrix
+# IR_mat2 <- log(select(DIN_bayes, `1`:`1000`)/
+#                 (select(DIN_light_mat, `1`:`1000`)+select(DIN_mat, `1`:`1000`)))
+# 
+# rowSums(is.na(IR_mat2))
+# IR_mat2[is.na(IR_mat2)] <- 10
+# 
+# # Compute the credible intervals
+# DIN_CItrend3 <- cbind(data.frame(t(apply(IR_mat2, 1, quantile, probs = c(0.025, 0.5, 0.975), na.rm = TRUE))), xDIN_newdata) %>% within({
+#   Treatment <- case_when(#Light_num == 20 & DIN_num == 0 ~ "Control",
+#                          Light_num == 20  ~ "DIN_only",
+#                          DIN_num == 0  ~ "Light_only",
+#                         TRUE ~ paste0("Light = ", Light_num, ", DIN = ", DIN_num))}) %>% 
+#   filter(!(Treatment %in% c("Light_only","DIN_only",  "Control")))
+# 
+# ggplot(DIN_CItrend3) + aes(x = hours_fact, y = X50., colour = Treatment, fill = Treatment) + 
+#   #geom_line(aes(x = as.integer(hours_fact))) + 
+#   geom_hline(yintercept = 0, lty= "dashed") +theme_classic() + xlab("Hours") +
+#   geom_point(position = position_dodge2(0.5)) +
+#   geom_linerange(mapping = aes(ymin = X2.5., ymax = X97.5.), position = position_dodge2(0.5)) +
+#     ylab(expression("I"[R])) 
+# 
+# ggsave("Figures/photo-inhib_DIN-mod_IR.png", width = 20, height = 13, units = "cm", dpi = 300)
+# 
+# 
+# # ggplot(DIN_CItrend3) + aes(x = hours_fact, y = X50., colour = Treatment, fill = Treatment) + 
+# #   #geom_line(aes(x = as.integer(hours_fact))) + 
+# #   geom_hline(yintercept = 0, lty= "dashed") +theme_classic() + xlab("Hours") +
+# #   geom_point(position = position_dodge2(0.5)) +
+# #   geom_linerange(mapping = aes(ymin = X2.5., ymax = X97.5.), position = position_dodge2(0.5)) +
+# #     ylab(expression("I"[R]))  + ylim(c(-0.5,1.5)) + ggtitle("Zoomed in")
+# # 
+# # 
+# # ggsave("Figures/fluoro_DIN-mod_IR_zoomed.png", width = 20, height = 13, units = "cm", dpi = 300)
+
+```
+
+
+### DIN yield LRR plots
+
+
+```{r}
+# Generate some data for prediction
+xDIN_newdata <- with(psii_dat,{
+  expand.grid(list(Light_num = unique(Light_num), DIN_num = c(0, 2.67, 26.7), hours = unique(hours)))}) %>%
+  mutate(block = 2, sample_id = psii_dat$sample_id[[1]], hours_fact = factor(hours), t0 = 0.6) 
+
+# Make predictions based 
+set.seed(1000)
+DIN_bayes <- compute_CI_data(model = m1_DIN_yield, dat = xDIN_newdata, nsims = 1000) %>% within({
+  Treatment <- case_when(Light_num == 80 & DIN_num == 0 ~ "Control",
+    Light_num == 80  ~ "DIN_only",
+    DIN_num == 0  ~ "Light_only",
+    TRUE ~ "Light_DIN")
+  }) 
+
+# # Generate the control matrix
+DIN_bayes_control <- DIN_bayes %>% filter(Treatment == "Control")
+DIN_control_mat <- DIN_bayes_control[ match(DIN_bayes$hours, DIN_bayes_control$hours) ,]
+
+# Generate light only matrix
+DIN_bayes_light <- DIN_bayes %>% filter(DIN_num == 0)
+DIN_light_mat <- DIN_bayes_light[ 
+  match(paste(DIN_bayes$hours, DIN_bayes$Light_num), 
+        paste(DIN_bayes_light$hours, DIN_bayes_light$Light_num)) ,]
+
+# Generate DIN only matrix
+DIN_bayes_DIN <- DIN_bayes %>% filter(Light_num == 80 )
+DIN_mat <- DIN_bayes_DIN[ 
+  match(paste(DIN_bayes$hours, DIN_bayes$DIN_num), 
+        paste(DIN_bayes_DIN$hours, DIN_bayes_DIN$DIN_num)) ,]
+
+# Compute the IR matrix
+IR_mat2 <- log((select(DIN_bayes, `1`:`1000`)/select(DIN_control_mat, `1`:`1000`))/
+                ((select(DIN_light_mat, `1`:`1000`)/select(DIN_control_mat, `1`:`1000`))*
+                   (select(DIN_mat, `1`:`1000`)/select(DIN_control_mat, `1`:`1000`))))
+
+# col_invest <- "2"
+# check <- cbind(select(DIN_bayes, Light_num:t0), 
+#                data.frame(both = DIN_bayes[,col_invest], lightonly = DIN_light_mat[,col_invest], 
+#                           DINonly =  DIN_mat[,col_invest], control = DIN_control_mat[,col_invest])) %>%
+#   within({
+#   both_diff <- control - both
+#   light_diff <- control - lightonly
+#   DIN_diff <- control - DINonly
+#   denominator <- light_diff + DIN_diff
+#   RR <- both_diff/denominator
+#   LRR <-  log(RR)
+#   })
+rowSums(is.na(IR_mat2))
+
+
+# # # Bool matrix to replace NANs with antag or synergism
+# bool_mat2 <- (select(DIN_control_mat, `1`:`1000`) - select(DIN_bayes, `1`:`1000`)) < 0
+# IR_mat2[is.na(IR_mat2) & bool_mat2] <- -5.5
+# IR_mat2[is.na(IR_mat2) & !(bool_mat2)] <- 5.5
+
+
+# Compute the credible intervals
+DIN_CItrend3 <- cbind(data.frame(t(apply(IR_mat2, 1, quantile, probs = c(0.025, 0.5, 0.975), na.rm = TRUE))), xDIN_newdata) %>% within({
+  Treatment <- case_when(Light_num == 80 & DIN_num == 0 ~ "Control",
+                         Light_num == 80  ~ "DIN_only",
+                         DIN_num == 0  ~ "Light_only",
+                        TRUE ~ paste0("Light = ", Light_num, ", DIN = ", DIN_num))}) %>% 
+  filter(!(Treatment %in% c("Light_only","DIN_only",  "Control")))
+
+ggplot(DIN_CItrend3) + aes(x = hours_fact, y = X50., colour = Treatment, fill = Treatment) + 
+  #geom_line(aes(x = as.integer(hours_fact))) + 
+  geom_hline(yintercept = 0, lty= "dashed") +theme_classic() + xlab("Hours") +
+  geom_point(position = position_dodge2(0.5)) +
+  # geom_point(aes(x = hours_fact, y = X97.5., colour = Treatment, alpha = (X97.5. == 5.5)),
+  #            position = position_dodge2(0.5), shape = 2) + 
+  # geom_point(aes(x = hours_fact, y = X2.5., colour = Treatment, alpha = (X2.5. == -5.5)),
+  #            position = position_dodge2(0.5), shape = 6) + 
+  geom_linerange(mapping = aes(ymin = X2.5., ymax = X97.5.), position = position_dodge2(0.5)) +
+    ylab(expression("I"[R])) +guides(alpha = FALSE)
+
+ggsave("../Outputs/photo_yield_DIN-mod_IR_2021-06-17.png", width = 20, height = 13, units = "cm", dpi = 300)
+
+# ggplot(DIN_CItrend3) + aes(x = hours_fact, y = X50., colour = Treatment, fill = Treatment) +
+#   #geom_line(aes(x = as.integer(hours_fact))) +
+#   geom_hline(yintercept = 0, lty= "dashed") +theme_classic() + xlab("Hours") +
+#   geom_point(position = position_dodge2(0.5)) +
+#   geom_linerange(mapping = aes(ymin = X2.5., ymax = X97.5.), position = position_dodge2(0.5)) +
+#     ylab(expression("I"[R]))  + ylim(c(-50,50)) + ggtitle("Zoomed in")
+# # 
+# 
+# ggsave("Figures/fluoro_DIN-mod_IR_zoomed.png", width = 20, height = 13, units = "cm", dpi = 300)
+
+```
+
+
+```{r}
+# SAVE DATA FOR PLOTTING
+DIN_photo_CI_data <- DIN_CItrend3 %>% select(-block, -sample_id)
+
+DIN_photo_data <- psii_dat %>% select(hours, hours_fact, Light_num, DIN_num, block, sample_id, t0, Yield) %>% within(Yield_pred <- predict(m1_DIN_yield, newdata = .))
+
+save(DIN_photo_CI_data, DIN_photo_data, m1_DIN_yield, file = "../Data/DIN_photo_model_and_data2.RDA")
+
+```
+
+
+```{r}
+fake_block <- rnorm(n = 4, sd = 0.25, mean = 0)
+psii_dat_fake <- within(psii_dat, {
+
+  Yield <- t0 + hours/(72) -(80-Light_num)/(80*4) - DIN_num/(3*4) + ifelse((80 - Light_num)*DIN_num == 0, 0, 1 )*((24 - hours)/72*4) +
+    fake_block[as.numeric(block)] + rnorm(300, mean = 1, sd = .10)
+
+  })
+
+m1_diuron_yield <- gam(Yield ~ s(hours, k = 5) +
+                         offset(t0)+
+                      s(Diuron_num, Light_num, k = 15, by = hours_fact) +
+                        #s(sample_id, bs = "re")+
+                       #s(Light_num, k = 3, by = hours_fact) +
+                       #s(Diuron_num, k = 5, by =hours_fact) +
+                      s(block, bs = "re"),
+                    data = psii_dat_fake)
+
+par(mfrow = c(2,2))
+gam.check(m1_diuron_yield)
+
+```
+
