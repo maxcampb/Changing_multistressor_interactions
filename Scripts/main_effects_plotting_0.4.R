@@ -60,6 +60,8 @@ fig1 <- ggplot(preddatDIN_lim) +
   labs(title = "A") + #add A and B labels +
   theme(legend.position = "none") # removes legend, so A part of the figure doesn't have a legend
 
+fig1 <- fig1 + geom_hline( yintercept = unique(log(preddatDIN_lim$t0)), linetype = "dotted")
+
 # save the plot into output folder
 ggsave("Outputs/maineffects_DINgrowth_light_IR_limited_2021-12-03.png", 
        width = 30, height = 13, units = "cm", dpi = 300 )
@@ -112,6 +114,8 @@ fig2 <- ggplot(preddatDiuron_lim) +
   labs(title = "A") + #add A and B labels
   theme(legend.position = "none") # removes legend, so A part of the figure doesn't have a legend
 
+fig2 <- fig2 + geom_hline( yintercept = unique(log(preddatDiuron_lim$t0)), linetype = "dotted")
+
 # save the plot into output folder
 ggsave("Outputs/maineffects_Diurongrowth_light_IR_limited_2021-12-03.png", 
        width = 30, height = 13, units = "cm", dpi = 300 )
@@ -160,6 +164,8 @@ fig3 <- ggplot(preddatDINphoto_lim) +
   guides(color=guide_legend(leg_lab),
          fill=guide_legend(leg_lab)) + # changes the legend title
   labs(title = "B") #add A and B labels
+
+fig3 <- fig3 + geom_hline( yintercept = unique(preddatDINphoto_lim$t0), linetype = "dotted")
 
 # save the plot into output folder
 ggsave("Outputs/maineffects_DINphoto_light_IR_limited_2021-12-03.png", 
@@ -212,11 +218,14 @@ fig4 <- ggplot(preddatDiuronphoto_lim) +
          fill=guide_legend(leg_lab)) + # changes the legend title
   labs(title = "B") #add A and B labels
 
+fig4 <- fig4 + geom_hline( yintercept = unique(preddatDiuronphoto_lim$t0), linetype = "dotted")
+
 # save the plot into output folder
 ggsave("Outputs/maineffects_Diuronphoto_light_IR_limited_2021-12-03.png", 
        width = 30, height = 13, units = "cm", dpi = 300 )
 
 # PATCHWORK TOGETHER... ---------------------------------------------------
+
 pw1 <- (fig1 + fig3) + #two photosynthesis figures for DIN
   plot_layout(ncol = 2, widths = c(1,1)) & 
   theme(plot.tag = element_text(size = 16))
