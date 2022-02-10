@@ -220,7 +220,7 @@ ggplot(filter(photo_sims_summary, eval_metric %in% c("p_correctly_model", "p_cor
   xlab("Additive Error") +
   geom_point(position = position_dodge(0.5)) + facet_wrap(. ~ `Interaction Type`) + theme_bw()
 
-ggsave("Outputs/proportion_correctly_classified_photo.png", width = 25, height = 15, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/proportion_correctly_classified_photo.png", width = 25, height = 15, dpi = 300, units = "cm")
 ##
 
 ## Plot to access the rate of misclassifications
@@ -233,7 +233,7 @@ ggplot(Error_rate_summary,
   xlab("Additive Error") +
   geom_point(position = position_dodge(0.5)) + facet_wrap(. ~ `Interaction Type`) + theme_bw()
 
-ggsave("Outputs/error_rate_photo.png", width = 25, height = 15, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/error_rate_photo.png", width = 25, height = 15, dpi = 300, units = "cm")
 ##
 
 ## Plot to access the effectiveness of the credible intervals at capturing the true statistic
@@ -243,7 +243,7 @@ ggplot(filter(photo_sims_summary, (eval_metric %in% c("p_captured_model"))),
   geom_point(position = position_dodge(0.35))  + theme_bw() + ylab("Proportion of True Values Captured by the 95CI") + 
   xlab("Additive Error") + ylim(c(0, 1))
 
-ggsave("Outputs/photo_95CI_capture.png", width = 17, height = 12, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/photo_95CI_capture.png", width = 17, height = 12, dpi = 300, units = "cm")
 ##
 
 # Growth model validation -----------------------------------------
@@ -285,7 +285,7 @@ ggplot(filter(growth_sims_summary, eval_metric %in% c("p_correctly_model", "p_co
   xlab("Multiplicative Error") +
   geom_point(position = position_dodge(0.5)) + facet_wrap(. ~ `Interaction Type`) + theme_bw()
 
-ggsave("Outputs/proportion_correctly_classified_growth.png", width = 25, height = 15, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/proportion_correctly_classified_growth.png", width = 25, height = 15, dpi = 300, units = "cm")
 ##
 
 ## Plot to access the rate of misclassifications
@@ -298,7 +298,7 @@ ggplot(Error_rate_summary,
   xlab("Multiplicative Error") +
   geom_point(position = position_dodge(0.5)) + facet_wrap(. ~ `Interaction Type`) + theme_bw()
 
-ggsave("Outputs/error_rate_growth.png", width = 25, height = 15, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/error_rate_growth.png", width = 25, height = 15, dpi = 300, units = "cm")
 ##
 
 ## Plot to access the effectiveness of the credible intervals at capturing the true statistic
@@ -308,7 +308,7 @@ ggplot(filter(growth_sims_summary, (eval_metric %in% c("p_captured_model"))),
   geom_point(position = position_dodge(0.35))  + theme_bw() + ylab("Proportion of True Values Captured by the 95CI") + 
   xlab("Multiplicative Error") + ylim(c(0, 1))
 
-ggsave("Outputs/growth_95CI_capture.png", width = 17, height = 12, dpi = 300, units = "cm")
+ggsave("Outputs/Model validation/growth_95CI_capture.png", width = 17, height = 12, dpi = 300, units = "cm")
 ##
 
 
