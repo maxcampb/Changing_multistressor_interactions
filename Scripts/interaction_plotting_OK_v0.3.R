@@ -70,7 +70,7 @@ ggplot(plot_DIN_growth) + aes(x = hours_fact, y = X50., colour = Treatment, fill
 (p1 + p2)
 
 # save the plot into output folder
-ggsave("Outputs/growth_DIN_Diuron_IR_2021-11-30.png", 
+ggsave("Outputs/growth_DIN_Diuron_IR_2022-02-10.png", 
        width = 30, height = 13, units = "cm", dpi = 300 )
 
 
@@ -100,5 +100,5 @@ ggplot(plot_DIN_photo) + aes(x = hours_fact, y = X50., colour = Treatment, fill 
 (p3 + p4)
 
 # save the plot into output folder
-ggsave("Outputs/photosynthesis_DIN_Diuron_IR_2021-11-30.png", 
+ggsave("Outputs/photosynthesis_DIN_Diuron_IR_2022-02-10.png", 
        width = 30, height = 13, units = "cm", dpi = 300 )

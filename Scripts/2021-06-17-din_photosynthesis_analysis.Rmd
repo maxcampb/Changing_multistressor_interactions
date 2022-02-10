@@ -80,7 +80,7 @@ ggplot(psii_dat) +
 
 # psii_dat2 <- psii_dat %>% filter(DIN_num != 0)
 
-# m1_DIN_inhib <- gam(photo_inhib ~ s(hours, k = 5) + 
+# m1_DIN_inhib <- gam(photo_inhib ~ hours_fact + 
 #                          offset(inhibt0)+
 #                       s(DIN_num, Light_num, k = 12, by = hours_fact) +  
 #                         s(sample_id, bs = "re")+
@@ -89,7 +89,7 @@ ggplot(psii_dat) +
 #                       s(block, bs = "re"), 
 #                     data = psii_dat2)
 
-m1_DIN_yield <- gam(Yield ~ s(hours, k = 5) + 
+m1_DIN_yield <- gam(Yield ~ hours_fact + 
                          offset(t0)+
                       s(DIN_num, Light_num, k = 18, by = hours_fact) +  
                         #s(sample_id, bs = "re")+
@@ -372,7 +372,7 @@ psii_dat_fake <- within(psii_dat, {
 
   })
 
-m1_diuron_yield <- gam(Yield ~ s(hours, k = 5) +
+m1_diuron_yield <- gam(Yield ~ hours_fact +
                          offset(t0)+
                       s(Diuron_num, Light_num, k = 15, by = hours_fact) +
                         #s(sample_id, bs = "re")+

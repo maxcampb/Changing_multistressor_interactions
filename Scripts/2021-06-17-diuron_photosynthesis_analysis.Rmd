@@ -90,7 +90,7 @@ ggplot(psii_dat) +
 #                       s(block, bs = "re"), 
 #                     data = psii_dat2)
 
-m1_diuron_yield <- gam(Yield ~ s(hours, k = 5) + 
+m1_diuron_yield <- gam(Yield ~ hours_fact + 
                          offset(t0)+
                       s(Diuron_num, Light_num, k = 15, by = hours_fact) +  
                         #s(sample_id, bs = "re")+
