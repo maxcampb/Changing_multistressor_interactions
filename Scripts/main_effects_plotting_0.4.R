@@ -18,7 +18,7 @@ load(file = "Data/DIN_growth_model_and_data2.RDA") # Diuron growth models and da
 preddatDIN <- expand.grid(hours = unique(DIN_growth_data$hours),
                           DIN_num = unique(DIN_growth_data$DIN_num),
                           Light_num = unique(DIN_growth_data$Light_num),
-                          t0 = mean(DIN_growth_data$t0),
+                          t0 = 47,
                           block = 0)
 
 # note: also need hours as a factor, so make that: 
@@ -44,9 +44,9 @@ fig1 <- ggplot(preddatDIN_lim) +
   aes(x = hours, y = fit, color = Light_num,
       fill = Light_num,
       group = Light_num) + 
-  geom_line() +
   geom_ribbon(aes(ymin = fit -sefit*1.96, ymax = fit+sefit*1.96),
               alpha = 0.5, color = NA) +
+  geom_line() +
   facet_grid(.~DIN_num) +
   theme_classic()  +
   scale_color_manual(values = c("midnightblue","blue","skyblue")) +
@@ -54,17 +54,17 @@ fig1 <- ggplot(preddatDIN_lim) +
   aes(x = hours, y = fit, color = factor(Light_num),
       fill = factor(Light_num),
       group = Light_num) +
-  labs(x = expression(Hours), y = expression(Cell~density~(OD[685]))) + #changes the x and y axis titles
+  labs(x = expression(Hours), y = expression(Log~Cell~density~(OD[685]))) + #changes the x and y axis titles
   guides(color=guide_legend(leg_lab),
          fill=guide_legend(leg_lab)) + # changes the legend title
   labs(title = "A") + #add A and B labels +
   theme(legend.position = "none") # removes legend, so A part of the figure doesn't have a legend
 
 fig1 <- fig1 + geom_hline( yintercept = unique(log(preddatDIN_lim$t0)), linetype = "dotted")
-
-# save the plot into output folder
-ggsave("Outputs/maineffects_DINgrowth_light_IR_limited_2021-12-03.png", 
-       width = 30, height = 13, units = "cm", dpi = 300 )
+  
+# # save the plot into output folder
+# ggsave("Outputs/maineffects_DINgrowth_light_IR_limited_2021-12-03.png", 
+#        width = 30, height = 13, units = "cm", dpi = 300 )
 
 # DIURON (growth) -----------------------------------------------------
 
@@ -72,7 +72,7 @@ ggsave("Outputs/maineffects_DINgrowth_light_IR_limited_2021-12-03.png",
 preddatDIURON <- expand.grid(hours = unique(Diuron_growth_data$hours),
                              Diuron_num = unique(Diuron_growth_data$Diuron_num),
                              Light_num = unique(Diuron_growth_data$Light_num),
-                             t0 = mean(Diuron_growth_data$t0),
+                             t0 = 47,
                              block = 0)
 
 # note: also need hours as a factor, so make that: 
@@ -98,9 +98,9 @@ fig2 <- ggplot(preddatDiuron_lim) +
   aes(x = hours, y = fit, color = Light_num,
       fill = Light_num,
       group = Light_num) + 
-  geom_line() +
   geom_ribbon(aes(ymin = fit -sefit*1.96, ymax = fit+sefit*1.96),
               alpha = 0.5, color = NA) +
+  geom_line() +
   facet_grid(.~Diuron_num) + 
   theme_classic() +
   scale_color_manual(values = c("midnightblue","blue","skyblue")) + #changes the colour of the lines
@@ -108,7 +108,7 @@ fig2 <- ggplot(preddatDiuron_lim) +
   aes(x = hours, y = fit, color = factor(Light_num),
       fill = factor(Light_num),
       group = Light_num) +
-  labs(x = expression(Hours), y = expression(Cell~density~(OD[685]))) + #changes the x and y axis titles
+  labs(x = expression(Hours), y = expression(Log~Cell~density~(OD[685]))) + #changes the x and y axis titles
   guides(color=guide_legend(leg_lab),
          fill=guide_legend(leg_lab)) + # changes the legend title
   labs(title = "A") + #add A and B labels
@@ -116,9 +116,9 @@ fig2 <- ggplot(preddatDiuron_lim) +
 
 fig2 <- fig2 + geom_hline( yintercept = unique(log(preddatDiuron_lim$t0)), linetype = "dotted")
 
-# save the plot into output folder
-ggsave("Outputs/maineffects_Diurongrowth_light_IR_limited_2021-12-03.png", 
-       width = 30, height = 13, units = "cm", dpi = 300 )
+# # save the plot into output folder
+# ggsave("Outputs/maineffects_Diurongrowth_light_IR_limited_2021-12-03.png", 
+#        width = 30, height = 13, units = "cm", dpi = 300 )
 
 
 # DIN (photosynthesis) -----------------------------------------------------
@@ -127,7 +127,7 @@ ggsave("Outputs/maineffects_Diurongrowth_light_IR_limited_2021-12-03.png",
 preddatDINphoto <- expand.grid(hours = unique(DIN_photo_data$hours),
                                DIN_num = unique(DIN_photo_data$DIN_num),
                                Light_num = unique(DIN_photo_data$Light_num),
-                               t0 = mean(DIN_photo_data$t0),
+                               t0 = 0.52,
                                block = 0)
 
 # note: also need hours as a factor, so make that: 
@@ -150,9 +150,9 @@ fig3 <- ggplot(preddatDINphoto_lim) +
   aes(x = hours, y = fit, color = Light_num,
       fill = Light_num,
       group = Light_num) + 
-  geom_line() +
   geom_ribbon(aes(ymin = fit -sefit*1.96, ymax = fit+sefit*1.96),
               alpha = 0.5, color = NA) +
+  geom_line() +
   facet_grid(.~DIN_num) +
   theme_classic()  +
   scale_color_manual(values = c("midnightblue","blue","skyblue")) +
@@ -167,9 +167,9 @@ fig3 <- ggplot(preddatDINphoto_lim) +
 
 fig3 <- fig3 + geom_hline( yintercept = unique(preddatDINphoto_lim$t0), linetype = "dotted")
 
-# save the plot into output folder
-ggsave("Outputs/maineffects_DINphoto_light_IR_limited_2021-12-03.png", 
-       width = 30, height = 13, units = "cm", dpi = 300 )
+# # save the plot into output folder
+# ggsave("Outputs/maineffects_DINphoto_light_IR_limited_2021-12-03.png", 
+#        width = 30, height = 13, units = "cm", dpi = 300 )
 
 # DIURON (photosynthesis) -----------------------------------------------------
 
@@ -177,7 +177,7 @@ ggsave("Outputs/maineffects_DINphoto_light_IR_limited_2021-12-03.png",
 preddatDIURONphoto <- expand.grid(hours = unique(Diuron_photo_data$hours),
                                   Diuron_num = unique(Diuron_photo_data$Diuron_num),
                                   Light_num = unique(Diuron_photo_data$Light_num),
-                                  t0 = mean(Diuron_photo_data$t0),
+                                  t0 = 0.52,
                                   block = 0)
 
 # note: also need hours as a factor, so make that: 
@@ -203,9 +203,9 @@ fig4 <- ggplot(preddatDiuronphoto_lim) +
   aes(x = hours, y = fit, color = Light_num,
       fill = Light_num,
       group = Light_num) + 
-  geom_line() +
   geom_ribbon(aes(ymin = fit -sefit*1.96, ymax = fit+sefit*1.96),
               alpha = 0.5, color = NA) +
+  geom_line() +
   facet_grid(.~Diuron_num) + 
   theme_classic() +
   scale_color_manual(values = c("midnightblue","blue","skyblue")) + #changes the colour of the lines
@@ -221,8 +221,8 @@ fig4 <- ggplot(preddatDiuronphoto_lim) +
 fig4 <- fig4 + geom_hline( yintercept = unique(preddatDiuronphoto_lim$t0), linetype = "dotted")
 
 # save the plot into output folder
-ggsave("Outputs/maineffects_Diuronphoto_light_IR_limited_2021-12-03.png", 
-       width = 30, height = 13, units = "cm", dpi = 300 )
+# ggsave("Outputs/maineffects_Diuronphoto_light_IR_limited_2021-12-03.png", 
+#        width = 30, height = 13, units = "cm", dpi = 300 )
 
 # PATCHWORK TOGETHER... ---------------------------------------------------
 
@@ -231,7 +231,7 @@ pw1 <- (fig1 + fig3) + #two photosynthesis figures for DIN
   theme(plot.tag = element_text(size = 16))
 pw1
 
-ggsave("Outputs/maineffects_DIN_GrowthPhoto_2021-12-03.png",
+ggsave("Outputs/maineffects_DIN_GrowthPhoto_2022-02-09.png",
        plot = pw1, 
        width = 30, height = 13, units = "cm", dpi = 300 )
 
@@ -243,3 +243,4 @@ pw2
 ggsave("Outputs/maineffects_DIURON_GrowthPhoto_2021-12-03.png", 
        plot = pw2, 
        width = 30, height = 13, units = "cm", dpi = 300 )
+

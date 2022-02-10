@@ -136,7 +136,7 @@ Model fitting and checking diagnostics. Fit a model with 2-way interaction betwe
 ```{r}
 
 # method = REML or ML seems to be undersmoothing data
-m1_din_light <- gam(log(celld) ~ 0 + s(hours, k = 5) + offset(log(t0)) +
+m1_din_light <- gam(log(celld) ~ 0 + hours_fact + offset(log(t0)) +
                       s(DIN_num, Light_num, k = 15, by = hours_fact) +  
                       #s(sample_id, bs = "re")+
                        #s(Light_num, k = 3, by = hours_fact, bs = "cr") +
@@ -729,7 +729,7 @@ xdin_light2_fake <- within(xdin_light2, {
   
   })
 
-m1_diuron_light <- gam(log(celld) ~ 0 + s(hours, k = 5) + offset(log(t0)) +
+m1_diuron_light <- gam(log(celld) ~ 0 + hours_fact + offset(log(t0)) +
                       s(Diuron_num, Light_num, k = 15, by = hours_fact) +
                          #s(sample_id, bs = "re")+
                        # s(Light_num, k = 3, by = hours_fact) +
@@ -737,7 +737,7 @@ m1_diuron_light <- gam(log(celld) ~ 0 + s(hours, k = 5) + offset(log(t0)) +
                       s(block, bs = "re"),
                     data = xdiuron_light2_fake)
 
-m1_din_light <- gam(log(celld) ~ 0 + s(hours, k = 5) + offset(log(t0)) +
+m1_din_light <- gam(log(celld) ~ 0 + hours_fact + offset(log(t0)) +
                       s(DIN_num, Light_num, k = 15, by = hours_fact) +  
                       s(sample_id, bs = "re")+
                        #s(Light_num, k = 3, by = hours_fact) +
