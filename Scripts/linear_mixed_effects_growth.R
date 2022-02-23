@@ -1,6 +1,6 @@
-
-
-
+library(dplyr)
+library(tidyr)
+library(lme4)
 
 files <- list.files(path = "Data", pattern = "diuron_light_rep", full.names = TRUE)
 
@@ -32,4 +32,49 @@ xdiuron_light2 <- xdiuron_light  %>%
   ungroup() %>%  
   mutate(sample_id = factor(gsub("."," ", x = paste(Diuron, Light, block), fixed = TRUE))) %>% 
   filter(hours != 0, Diuron != "MeOH") %>% 
-  mutate(Diuron_fact = factor(ifelse(Diuron == "AlgaeControl", "0", Diuron)))
+  mutate(Diuron_fact = factor(ifelse(Diuron == "AlgaeControl", "0", Diuron)))  %>%
+  mutate(lncelld = log(celld),
+         lnt0 = log(t0))
+
+xdiuron_light2$Light <- factor(xdiuron_light2$Light)
+xdiuron_light2$Light <- relevel(xdiuron_light2$Light, ref = "80")
+levels(xdiuron_light2$hours_fact)
+
+
+#
+# Figure 2
+# Light, zero diuron. 
+
+lightdat <- filter(xdiuron_light2, Diuron == "AlgaeControl")
+nrow(lightdat)
+#Select the best model 
+m1 <- lmer(lncelld ~ Light*hours_fact + offset(lnt0) + (1|block),
+           data = lightdat)
+qqnorm(resid(m1))
+qqline(resid(m1))
+m2 <- lmer(lncelld ~ Light+hours_fact + offset(lnt0) + (1|block),
+           data = lightdat)
+anova(m1, m2) #likelihood ratio test,
+#report p-value and chi-square statistic
+
+#Compare differences with "profile confidence intervals"
+confint(m1)
+
+
+#
+# Dose response curves
+#
+
+library(mgcv)
+library(visreg)
+mDR <- gam(lncelld ~ s(Diuron_num, by = Light, k = 4) + Light + 
+             offset(lnt0), 
+           data = xdiuron_light2,
+           method = "REML")
+summary(mDR)
+visreg(mDR, xvar = "Diuron_num", by = "Light")
+
+
+
+
+
