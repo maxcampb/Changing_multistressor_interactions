@@ -80,7 +80,7 @@ levels(psii_dat$hours_fact)
 view(psii_dat)
 
 # Light, no diuron
-lightdatphoto <- filter(psii_dat, Light_num == "80")
+lightdatphoto <- filter(psii_dat, Diuron == "Control")
 nrow(lightdatphoto)
 view(lightdatphoto)
 #Select the best model ######### MODELS DON'T WORK???
@@ -99,12 +99,12 @@ anova(m5, m6) #likelihood ratio test, tells me if interaction between light and 
 view(psii_dat)
 library(mgcv)
 library(visreg)
-mDR <- gam(Yield ~ s(Diuron, by = Light_num, k = 4) + Light_num + 
+mDR <- gam(Yield ~ s(Diuron_num, by = Light_num, k = 4) + Light_num + 
              offset(t0), 
            data = psii_dat,
            method = "REML")
 summary(mDR)
-visreg(mDR, xvar = "Diuron", by = "Light_num")
+visreg(mDR, xvar = "Diuron_num", by = "Light_num")
 
 
 
