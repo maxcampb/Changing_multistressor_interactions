@@ -24,15 +24,15 @@ The aims of this research were to; 1) predict the non-linear effects of diuron e
 
 **01B_DIN_photosynthesis_analysis:** Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the DIN experiment with the photosynthetic endpoint.
 
-**01C_Diuron_growth_analysis:** Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the Duiron experiment with the growth endpoint.
+**01C_Diuron_growth_analysis:** Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the diuron experiment with the growth endpoint.
 
-**01D_Diuron_photosynthesis_analysis:** Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the Diuron experiment with the photosynthetic endpoint.
+**01D_Diuron_photosynthesis_analysis:** Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the diuron experiment with the photosynthetic endpoint.
 
-**02_interaction_plotting_all_models:** Step two script for plotting the interaction results of both experiments (DIN and Diuron) for both endpoints (growth and photsynthesis).
+**02_interaction_plotting_all_models:** Step two script for plotting the interaction results of both experiments (DIN and diuron) for both endpoints (growth and photsynthesis).
 
-**02_main_effects_plotting_all_models:** Step two script for plotting the GAM main effects of both experiments (DIN and Diuron) for both endpoints (growth and photsynthesis).
+**02_main_effects_plotting_all_models:** Step two script for plotting the GAM main effects of both experiments (DIN and diuron) for both endpoints (growth and photsynthesis).
 
-**2021-05-13_average_specific_growth_rate_plots:** Script that processes and plots the growth rate data and calcualates the percentage inhibition for the growth endpoint.
+**2021-05-13_average_specific_growth_rate_plots:** Script that processes the raw absorbance data to 'growth' by calculating the percentage inhibition for the growth endpoint.
 
 **model_validation_investigation:** Script with the investigation of the our approaches ability to capture know stressor interactions.
 
