@@ -2,7 +2,7 @@
 
 _Outline:_
 
-Using an experimental study, we present an approach for analysing regression-based designs with generalised additive models (GAMs) that allowed us to capture non-linear effects of exposure duration and stressor intensity, and access interactions among stressors. 
+Using an experimental study, we present an approach for analysing regression-based designs with generalised additive models (GAMs) that allowed us to capture non-linear effects of exposure duration and stressor intensity, and access interactions among stressors.
 
 _Aims:_
 
@@ -22,7 +22,7 @@ _Role of each script:_
 _Information for R software used:_
 
 Data processing and analyses was carried out using R statistical software version 4.1.0.
-Packages used: mgcv (version ???),
+Packages used: mgcv (version ???), rlang, tidyverse, furrr, visreg, ggplot2, patchwork and readxl. 
 
 **@cbrown5 this was a comment from the reviewer (below):**
 _When I tried to run some of the scripts, I found quite a lot of data exploration/notes/previous analyses – maybe some this could be streamlined so that the results from the paper can be easily reproduced._ **Can you please help me clean up the scripts? I have cleaned up the data folder and outputs folder, but I don't want to remove the wrong scripts from the file... After that, I can write the 'role of each script' in the above section**
