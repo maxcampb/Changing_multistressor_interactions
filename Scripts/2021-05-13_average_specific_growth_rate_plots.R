@@ -40,7 +40,7 @@ xdiuron_light2 <- xdiuron_light  %>%
   filter(hours != 0, Diuron != "MeOH", block != 1)
 
 
-# compute the percent inhibition (ive done this properly now)
+# compute the percent inhibition
 xdiuron_light3 <- xdiuron_light2 %>% 
   mutate(control = ifelse((Diuron_num == 0 & Light == 80), celld, NA ),
          control_t0 = ifelse((Diuron_num == 0 & Light == 80), t0, NA ),
