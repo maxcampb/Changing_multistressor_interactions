@@ -21,8 +21,8 @@ _Role of each script:_
 
 _Information for R software used:_
 
-Data processing and analyses was carried out using R statistical software version 1.1.463.
-Packages used: mgcv, **@cbrown5 can you please add extra packages here that Max would have used?**
+Data processing and analyses was carried out using R statistical software version 4.1.0.
+Packages used: mgcv (version ???),
 
 **@cbrown5 this was a comment from the reviewer (below):**
 _When I tried to run some of the scripts, I found quite a lot of data exploration/notes/previous analyses – maybe some this could be streamlined so that the results from the paper can be easily reproduced._ **Can you please help me clean up the scripts? I have cleaned up the data folder and outputs folder, but I don't want to remove the wrong scripts from the file... After that, I can write the 'role of each script' in the above section**
