@@ -32,7 +32,7 @@ The aims of this research were to; 1) predict the non-linear effects of diuron e
 
 **02_main_effects_plotting_all_models:** Step two script for plotting the GAM main effects of both experiments (DIN and Diuron) for both endpoints (growth and photsynthesis).
 
-**2021-05-13_average_specific_growth_rate_plots:** 
+**2021-05-13_average_specific_growth_rate_plots:** Script that processes and plots the growth rate data and calcualates the percentage inhibition for the growth endpoint.
 
 **model_validation_investigation:** Script with the investigation of the our approaches ability to capture know stressor interactions.
 
