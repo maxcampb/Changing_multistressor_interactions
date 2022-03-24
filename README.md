@@ -16,9 +16,13 @@ _Github repository files:_
 2. Output - contains various GAM, main effects, interactions and model validation figures.
 3. Scripts - contains the R-scripts that produce all output figures.
 
+***
+
 _Role of each script:_
 
 **????**
+
+***
 
 _Information for R software used:_
 
