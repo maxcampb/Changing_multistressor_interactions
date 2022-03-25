@@ -47,3 +47,5 @@ The aims of this research were to; 1) predict the non-linear effects of diuron e
 Data processing and analyses was carried out using R statistical software version 4.1.0.
 
 Packages used: mgcv (version 1.8.36), rlang (version 1.0.1), tidyverse (version 1.3.1), visreg (version 2.7.0), ggplot2 (version 3.3.4), patchwork (version 1.1.1) and readxl (version 1.3.1). 
+
+**Data also available via Dryad DOI: https://doi.org/10.5061/dryad.6m905qg22**
