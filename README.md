@@ -71,14 +71,19 @@ DATA FILES
 
 Data File 1: DIN_light_PSII_long_new.csv
 Data File 1 Description: Contains all experimental raw data (i.e. four replicates) for the responses of DIN and light exposure on chlorophyll-a fluorescence.
+
 Data File 2: diuron_light_PSII_long_NEW.csv
 Data File 2 Description: Contains all experimental raw data (i.e. four replicates) for the responses of diuron and light exposure on chlorophyll-a fluorescence.
+
 Data File 3: DIN_growth_model_and_data2.RDA
 Data File 3 Description: All experimental data (i.e. four replicates) for the responses of DIN and light exposure on absorbance (cell density), plus the model.
+
 Data File 4: Diuron_growth_model_and_data2.RDA
 Data File 4 Description: All experimental data (i.e. four replicates) for the responses of diuron and light exposure on absorbance (cell density), plus the model.
+
 Data File 5: DIN_photo_model_and_data2.RDA
 Data File 5 Description: Also contains experimental data (i.e. four replicates) for the responses of DIN and light exposure on chlorophyll-a fluorescence, plus the model.
+
 Data File 6: Diuron_photo_model_and_data2.RDA
 Data File 6 Description: Also contains experimental data (i.e. four replicates) for the responses of diuron and light exposure on chlorophyll-a fluorescence, plus the model.
 
@@ -86,31 +91,43 @@ OUTPUT FILES
 
 Output File 1: 01A_DIN_growth_analysis.R
 Output File 1 Description: Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the DIN experiment with the growth endpoint.
+
 Output File 2: 01B_DIN_photosynthesis_analysis.R
 Output File 2 Description: Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the DIN experiment with the photosynthetic endpoint.
+
 Output File 3: 01C_Diuron_growth_analysis.R
 Output File 3 Description: Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the diuron experiment with the growth endpoint.
+
 Output File 4: 01D_Diuron_photosynthesis_analysis.R
 Output File 4 Description: Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the diuron experiment with the photosynthetic endpoint.
+
 Output File 5: 02_interaction_plotting_all_models.R
 Output File 5 Description: Step two script for plotting the interaction results of both experiments (DIN and diuron) for both endpoints (growth and photsynthesis).
+
 Output File 6: 02_main_effects_plotting_all_models.R
 Output File 6 Description: Step two script for plotting the GAM main effects of both experiments (DIN and diuron) for both endpoints (growth and photsynthesis).
+
 Output File 7: 2021-05-13_average_specific_growth_rate_plots.R
 Output File 7 Description: Script that processes the raw absorbance data to 'growth' by calculating the percentage inhibition for the growth endpoint.
+
 Output File 8: model_validation_investigation.R
 Output File 8 Description: Script with the investigation of the our approaches ability to capture know stressor interactions.
+
 Output File 9: model_validation_functions.R
 Output File 9 Description: Functions used in the model validation investigation.
+
 Output File 10: bayes_CI_functions.R
 Output File 10 Description: Functions used for computing the empirical bayesian 95% credible intervals, which is adapted from the mgcv documentation.
 
 ## _2.5 Data specific information:_
 All toxicity tests were performed on four separate occasions (‘blocks’), using independent algae cultures.
+
 Number of replicates (blocks) for each experiment: 4
+
 Number of pseudo-replicates taken from each treatment: 2
 
 For the DIN experiments, a total of nine flasks were used per block, containing two NH4Cl treatments (2.76 and 27.6 mg L-1) plus an algae control, each at three light levels of 5, 20 and 80 μmol photons m-2 s-1 (n = 36).
+
 For the diuron experiments, 18 flasks were used per block, containing four diuron concentrations (0.1, 0.3, 1 and 3 µg L-1) plus a methanol control (at 0.08%) and an algae control, each at three light levels of 5, 20 and 80 μmol photons m-2 s-1 (n = 72).
 
 Missing data codes: NA
