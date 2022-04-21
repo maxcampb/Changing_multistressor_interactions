@@ -11,8 +11,11 @@ Data from: Interactions among multiple stressors vary with exposure duration and
 ## _1.2. Author information:_
 
 Corresponding author:
+
 Name: Olivia C. King 
+
 Institution: Coastal and Marine Research Centre, Australian Rivers Institute, School of Environment and Science, Griffith University, Gold Coast, Queensland, Australia 
+
 Email: olivia.king@griffithuni.edu.au
 
 Co-author 1: Jason P. van de Merwe
