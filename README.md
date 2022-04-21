@@ -67,7 +67,7 @@ These data were generated to investigate the physiological effects of varying co
 
 ## _2.4. Repository file list and descriptions:_
 
-DATA FILES
+**DATA FILES**
 
 Data File 1: DIN_light_PSII_long_new.csv
 Data File 1 Description: Contains all experimental raw data (i.e. four replicates) for the responses of DIN and light exposure on chlorophyll-a fluorescence.
@@ -87,7 +87,7 @@ Data File 5 Description: Also contains experimental data (i.e. four replicates) 
 Data File 6: Diuron_photo_model_and_data2.RDA
 Data File 6 Description: Also contains experimental data (i.e. four replicates) for the responses of diuron and light exposure on chlorophyll-a fluorescence, plus the model.
 
-OUTPUT FILES
+**OUTPUT FILES**
 
 Output File 1: 01A_DIN_growth_analysis.R
 Output File 1 Description: Step one script for processing the data, fitting the GAM, and finding the stressor interactions for the DIN experiment with the growth endpoint.
