@@ -129,20 +129,35 @@ For the diuron experiments, 18 flasks were used per block, containing four diuro
 **Variable definitions:**
 
 Number of replicates (blocks) for each experiment: 4
+
 Number of pseudo-replicates taken from each treatment: 2
+
 F: Minimum fluorescence
+
 Fm: Maximum fluorescence
+
 Y(II): Fluorescence yield, calculated as (Fm - F)/Fm
+
 Average Y (controls): Average yield of the controls
+
 StDev (controls): Average standard deviation of the controls
+
 StDev/Average (%): Standard deviation / avergae * 100
+
 Photosynthetic inhibition (%): Photoysnthetic yield as a percentage of the controls, calculated as ((Y test) / (Y control)) * 100
+
 Average photosynthetic inhibition (%): The average of the two pseudoreplicates of photosynthetic inhibition (%)
+
 DIN_num: Dissolved inorganic nitrogen concentration (in mg/L)
+
 Diuron_num: Diuron concentration (in μg/L)
+
 Light_num: Light level (in μmol photons m-2 s-1)
+
 t0: Cell density at time = zero
+
 celld: Cell density at treatment level
+
 NA: missing data codes
 
 ## _2.6 Information for R software used:_
