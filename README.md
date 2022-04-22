@@ -119,17 +119,31 @@ Output File 10: bayes_CI_functions.R
 Output File 10 Description: Functions used for computing the empirical bayesian 95% credible intervals, which is adapted from the mgcv documentation.
 
 ## _2.5 Data specific information:_
+
 All toxicity tests were performed on four separate occasions (‘blocks’), using independent algae cultures.
-
-Number of replicates (blocks) for each experiment: 4
-
-Number of pseudo-replicates taken from each treatment: 2
 
 For the DIN experiments, a total of nine flasks were used per block, containing two NH4Cl treatments (2.76 and 27.6 mg L-1) plus an algae control, each at three light levels of 5, 20 and 80 μmol photons m-2 s-1 (n = 36).
 
 For the diuron experiments, 18 flasks were used per block, containing four diuron concentrations (0.1, 0.3, 1 and 3 µg L-1) plus a methanol control (at 0.08%) and an algae control, each at three light levels of 5, 20 and 80 μmol photons m-2 s-1 (n = 72).
 
-Missing data codes: NA
+**Variable definitions:**
+
+Number of replicates (blocks) for each experiment: 4
+Number of pseudo-replicates taken from each treatment: 2
+F: Minimum fluorescence
+Fm: Maximum fluorescence
+Y(II): Fluorescence yield, calculated as (Fm - F)/Fm
+Average Y (controls): Average yield of the controls
+StDev (controls): Average standard deviation of the controls
+StDev/Average (%): Standard deviation / avergae * 100
+Photosynthetic inhibition (%): Photoysnthetic yield as a percentage of the controls, calculated as ((Y test) / (Y control)) * 100
+Average photosynthetic inhibition (%): The average of the two pseudoreplicates of photosynthetic inhibition (%)
+DIN_num: Dissolved inorganic nitrogen concentration (in mg/L)
+Diuron_num: Diuron concentration (in μg/L)
+Light_num: Light level (in μmol photons m-2 s-1)
+t0: Cell density at time = zero
+celld: Cell density at treatment level
+NA: missing data codes
 
 ## _2.6 Information for R software used:_
 
